@@ -1,27 +1,50 @@
 require('./bootstrap');
-require('./uploadGeoJson');
 
-// import Vue from 'vue';
+import Lasso from "./lasso";
+import UploadGeoJsonForm from "./uploadGeoJson";
 import ColourPicker from "./colourPicker";
 import LeafletMap from "./leafletMap";
 import MarkerColours from "./markerColours";
+import Vue from 'vue';
 
 jQuery(function() {
-    window.markerColours = bootMarkerColours();
-    // window.vue = bootVue();
-    // window.colourPicker = bootColourPicker();
+    window.vue = bootVue();
     window.map = bootMap();
+    window.lasso = bootLasso();
+    window.geoJsonForm = bootGeoJsonForm();
+    window.markerColours = bootMarkerColours();
+    window.colourPicker = bootColourPicker();
+
 });
 
-function bootMarkerColours() {
-    return new MarkerColours();
-}
 
 function bootVue() {
     return new Vue({
         el: '#app',
-        components: {}
+        components: {},
+        data() {
+            return {
+                showButtons:false
+            }
+        },
+        methods: {
+            lasso() {
+                window.map.drawNewRectangle();
+            }
+        }
     })
+}
+
+function bootLasso() {
+    return new Lasso();
+}
+
+function bootGeoJsonForm() {
+    return new UploadGeoJsonForm();
+}
+
+function bootMarkerColours() {
+    return new MarkerColours();
 }
 
 function bootColourPicker() {
@@ -31,5 +54,3 @@ function bootColourPicker() {
 function bootMap() {
     return new LeafletMap(39, -77, 12);
 }
-
-
