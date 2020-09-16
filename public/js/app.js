@@ -65344,7 +65344,9 @@ function bootVue() {
     components: {},
     data: function data() {
       return {
-        showButtons: false
+        showButtons: false,
+        hasUploadValidationErrors: false,
+        uploadValidationErrors: ""
       };
     },
     methods: {
@@ -65826,6 +65828,8 @@ var UploadGeoJsonForm = /*#__PURE__*/function () {
     value: function handleFormSubmit() {
       jQuery("#upload-geojson-form").on('submit', function (e) {
         e.preventDefault();
+        window.vue.hasUploadValidationErrors = false;
+        window.vue.uploadValidationErrors = "";
         var formData = new FormData(),
             fields = jQuery("#upload-geojson-form").serializeArray(),
             jsonFile = document.querySelector('#new_geojson');
@@ -65838,11 +65842,28 @@ var UploadGeoJsonForm = /*#__PURE__*/function () {
             'Content-Type': 'multipart/form-data'
           }
         }).then(function (response) {
+          console.log(response, 'response');
           window.map.replaceMarkers(response.data);
           jQuery("#uploadModal").modal('toggle');
           window.vue.showButtons = true;
         })["catch"](function (error) {
-          jQuery("#uploadModal").modal('toggle');
+          var data = error.response.data;
+          var errorResponse = "<p><strong>" + data.message + "</strong></p><ul>";
+          console.log(data.errors);
+
+          for (var _key in data.errors) {
+            var errors = data.errors[_key];
+            console.log(errors, 'errors');
+
+            for (var _error in errors) {
+              errorResponse += "<li>" + errors[_error] + "</li>";
+            }
+          }
+
+          errorResponse += "<ul>";
+          window.vue.hasUploadValidationErrors = true;
+          window.vue.uploadValidationErrors = errorResponse;
+          console.log(errorResponse); //jQuery("#uploadModal").modal('toggle');
         });
       });
     }

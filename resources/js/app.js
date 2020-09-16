@@ -17,14 +17,15 @@ jQuery(function() {
 
 });
 
-
 function bootVue() {
     return new Vue({
         el: '#app',
         components: {},
         data() {
             return {
-                showButtons:false
+                showButtons:false,
+                hasUploadValidationErrors:false,
+                uploadValidationErrors:""
             }
         },
         methods: {

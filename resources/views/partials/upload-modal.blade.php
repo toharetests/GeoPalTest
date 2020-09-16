@@ -21,6 +21,9 @@
                         </div>
                     </div>
                     <span style="padding: 0 5px" id="file_source"></span>
+                    <div v-html="uploadValidationErrors" v-if="hasUploadValidationErrors" class="alert alert-danger">
+
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
