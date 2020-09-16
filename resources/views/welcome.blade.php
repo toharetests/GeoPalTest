@@ -10,7 +10,12 @@
     <body class="antialiased">
         <div id="app" class="container-fluid">
             <div style="height: 100%" id="map-container">
-                <div id="leaflet-map"></div>
+                <div id="leaflet-map">
+                    <div class="leaflet-top leaflet-right">
+                        @include('partials.top-right-buttons')
+                    </div>
+                    @include('partials.upload-modal')
+                </div>
             </div>
         </div>
         <script src="{{ mix('/js/app.js') }}"></script>
