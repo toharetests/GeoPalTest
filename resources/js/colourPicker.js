@@ -11,6 +11,12 @@ export default class ColourPicker {
         this.hookColourPickerChangeToMarkers();
     }
 
+    /**
+     *     When a user moves the colour picker it causes the map to move.
+     *     This looks awful
+     *     So disable the map when the colour picker is visible and re-enable the map when the
+     *     picker is closed
+     */
     hookModalEventsToMap() {
         this.container.on('show.bs.modal', function(){
             window.map.disableUserInteraction();
@@ -22,6 +28,11 @@ export default class ColourPicker {
 
     }
 
+    /**
+     * The Leaflet markers are actually polygon circles
+     * Leaflet markers used images as of 16/09/2020
+     * Circles can use CSS
+     */
     hookColourPickerChangeToMarkers() {
         const ctx = this;
         const submitButton = jQuery("#updateIconColours");

@@ -65367,11 +65367,13 @@ function bootGeoJsonForm() {
 
 function bootMarkerColours() {
   return new _markerColours__WEBPACK_IMPORTED_MODULE_4__["default"]();
-}
+} //https://iro.js.org/
+
 
 function bootColourPicker() {
   return new _colourPicker__WEBPACK_IMPORTED_MODULE_2__["default"]();
-}
+} //https://leafletjs.com/
+
 
 function bootMap() {
   return new _leafletMap__WEBPACK_IMPORTED_MODULE_3__["default"](39, -77, 12);
@@ -65455,6 +65457,13 @@ var ColourPicker = /*#__PURE__*/function () {
     this.hookModalEventsToMap();
     this.hookColourPickerChangeToMarkers();
   }
+  /**
+   *     When a user moves the colour picker it causes the map to move.
+   *     This looks awful
+   *     So disable the map when the colour picker is visible and re-enable the map when the
+   *     picker is closed
+   */
+
 
   _createClass(ColourPicker, [{
     key: "hookModalEventsToMap",
@@ -65466,6 +65475,12 @@ var ColourPicker = /*#__PURE__*/function () {
         window.map.enableUserInteraction();
       });
     }
+    /**
+     * The Leaflet markers are actually polygon circles
+     * Leaflet markers used images as of 16/09/2020
+     * Circles can use CSS
+     */
+
   }, {
     key: "hookColourPickerChangeToMarkers",
     value: function hookColourPickerChangeToMarkers() {
@@ -65506,30 +65521,25 @@ var Lasso = /*#__PURE__*/function () {
   function Lasso() {
     _classCallCheck(this, Lasso);
 
-    this.hookLassoToDataTable();
+    this.hookLassoToCreateDataTable();
     this.hookCloseModalToRemoveRectangle();
-  }
+  } // Giant string
+
 
   _createClass(Lasso, [{
-    key: "hookLassoToDataTable",
-    value: function hookLassoToDataTable() {
+    key: "hookLassoToCreateDataTable",
+    value: function hookLassoToCreateDataTable() {
       var ctx = this;
       window.map.map.on(L.Draw.Event.CREATED, function (e) {
         var layer = e.layer;
-        window.map.editableLayers.addLayer(layer);
         ctx.markersInRectangle = "<table data-toggle=\"table\" id='locationsingrid' class='table'><thead><tr><td>Address</td><td>Latitude</td><td>Longitude</td></tr></thead><tbody>";
-
-        if (window.map.markerLayer === null) {
-          return;
-        }
-
         window.map.markerLayer.eachLayer(function (marker) {
           if (layer.getBounds().contains(marker.getLatLng())) {
             var _marker$feature$prope;
 
             var latLng = marker.getLatLng();
             var address = (_marker$feature$prope = marker.feature.properties['address']) !== null && _marker$feature$prope !== void 0 ? _marker$feature$prope : "Unknown";
-            ctx.markersInRectangle += "<tr><td>" + address + "</td><td>" + latLng.lat + "</td>" + "<td>" + latLng.lng + "</td></tr>";
+            ctx.markersInRectangle += "<tr><td>" + address + "</td>" + "<td>" + latLng.lat + "</td>" + "<td>" + latLng.lng + "</td></tr>";
           }
         });
         ctx.markersInRectangle += "</tbody></table>";
@@ -65540,10 +65550,12 @@ var Lasso = /*#__PURE__*/function () {
     key: "updateTable",
     value: function updateTable(html) {
       jQuery(".locations-container").html(html);
-      jQuery("#locationsingrid").DataTable({//scrollY:400,
+      jQuery("#locationsingrid").DataTable({
+        responsive: true
       });
       jQuery("#locationsModal").modal('toggle');
-    }
+    } //Cleanup form when Modal closes
+
   }, {
     key: "hookCloseModalToRemoveRectangle",
     value: function hookCloseModalToRemoveRectangle() {
@@ -65582,6 +65594,7 @@ __webpack_require__(/*! leaflet */ "./node_modules/leaflet/dist/leaflet-src.js")
 __webpack_require__(/*! leaflet-draw */ "./node_modules/leaflet-draw/dist/leaflet.draw.js");
 
 var LeafletMap = /*#__PURE__*/function () {
+  //region Setup
   function LeafletMap(startingLat, startingLng, startingZoom) {
     _classCallCheck(this, LeafletMap);
 
@@ -65603,17 +65616,9 @@ var LeafletMap = /*#__PURE__*/function () {
     value: function addOSMLayer() {
       // In a live environment there are copyright rules around using OSM tiles
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(this.map);
-    }
-  }, {
-    key: "addEditableLayer",
-    value: function addEditableLayer() {
-      this.editableLayers = new L.FeatureGroup(); // Layer for drawing rectangles on
+    } //endregion
+    //region Markers
 
-      this.map.addLayer(this.editableLayers);
-      var ctx = this; // Pointer to this so it can be accessed inside closure scopes
-
-      var tableData = "";
-    }
   }, {
     key: "replaceMarkers",
     value: function replaceMarkers(markers) {
@@ -65659,9 +65664,17 @@ var LeafletMap = /*#__PURE__*/function () {
           }
 
           html += "</table>";
-          var popupText = '<pre>' + html + '</pre>';
-          layer.bindPopup(popupText, {
+          var popupText = '<pre>' + html + '</pre>'; // Binds a popup to each marker
+          // Need to listen to popupclose in order to reset the active
+          // marker
+
+          var popup = layer.bindPopup(popupText, {
             maxWidth: 640
+          });
+          popup.on("popupclose", function (e) {
+            if (ctx.clickedMarker != null) {
+              ctx.setMarkerInactive(ctx.clickedMarker.target);
+            }
           });
         }
       };
@@ -65696,6 +65709,17 @@ var LeafletMap = /*#__PURE__*/function () {
       });
     }
   }, {
+    key: "updateMarkerColour",
+    value: function updateMarkerColour(colour) {
+      var ctx = this;
+      window.markerColours.setDefault(colour);
+      this.markerLayer.eachLayer(function (layer) {
+        ctx.setMarkerInactive(layer);
+      });
+    } //endregion
+    //region User Interaction
+
+  }, {
     key: "enableUserInteraction",
     value: function enableUserInteraction() {
       this.map.dragging.enable();
@@ -65708,23 +65732,18 @@ var LeafletMap = /*#__PURE__*/function () {
       this.map.dragging.disable();
       this.map.doubleClickZoom.disable();
       this.map.scrollWheelZoom.disable();
-    }
+    } //endregion
+    //region Drawing
+
   }, {
-    key: "updateMarkerColour",
-    value: function updateMarkerColour(colour) {
-      var ctx = this;
-      window.markerColours.setDefault(colour);
-      this.markerLayer.eachLayer(function (layer) {
-        ctx.setMarkerInactive(layer);
-      });
-    }
-  }, {
-    key: "deleteOldShapes",
-    value: function deleteOldShapes() {
-      var ctx = this;
-      this.editableLayers.eachLayer(function (layer) {
-        ctx.map.removeLayer(layer);
-      });
+    key: "addEditableLayer",
+    value: function addEditableLayer() {
+      this.editableLayers = new L.FeatureGroup(); // Layer for drawing rectangles on
+
+      this.map.addLayer(this.editableLayers);
+      var ctx = this; // Pointer to this so it can be accessed inside closure scopes
+
+      var tableData = "";
     }
   }, {
     key: "drawNewRectangle",
@@ -65732,7 +65751,17 @@ var LeafletMap = /*#__PURE__*/function () {
       this.deleteOldShapes();
       var rectangleDrawer = new L.Draw.Rectangle(this.map);
       rectangleDrawer.enable();
-    }
+    } // Stop a messy sea of rectangles appearing
+
+  }, {
+    key: "deleteOldShapes",
+    value: function deleteOldShapes() {
+      var ctx = this;
+      this.editableLayers.eachLayer(function (layer) {
+        ctx.map.removeLayer(layer);
+      });
+    } //endregion
+
   }]);
 
   return LeafletMap;
@@ -65800,9 +65829,12 @@ var UploadGeoJsonForm = /*#__PURE__*/function () {
   function UploadGeoJsonForm() {
     _classCallCheck(this, UploadGeoJsonForm);
 
+    this.hookModalToBootstrapEvents();
     this.hookFileInputToFileNameLabel();
     this.handleFormSubmit();
-  }
+  } // When a user adds a file show them the filename
+  // Required because the bootstrappy input hides the file uploaded
+
 
   _createClass(UploadGeoJsonForm, [{
     key: "hookFileInputToFileNameLabel",
@@ -65813,50 +65845,70 @@ var UploadGeoJsonForm = /*#__PURE__*/function () {
         var filename = (_e$target$files$0$nam = e.target.files[0].name) !== null && _e$target$files$0$nam !== void 0 ? _e$target$files$0$nam : "";
         jQuery("#file_source").html(filename);
       });
-    }
+    } //Axios call to server, checks for the valid GeoJSON and returns
+
   }, {
     key: "handleFormSubmit",
     value: function handleFormSubmit() {
       jQuery("#upload-geojson-form").on('submit', function (e) {
         e.preventDefault();
+        var ctx = this;
         window.vue.hasUploadValidationErrors = false;
-        window.vue.uploadValidationErrors = "";
+        window.vue.uploadValidationErrors = ""; //region Build POST data
+
         var formData = new FormData(),
             fields = jQuery("#upload-geojson-form").serializeArray(),
             jsonFile = document.querySelector('#new_geojson');
         $.each(fields, function (i, field) {
           formData.append(field.name, field.value);
         });
-        formData.append("json", jsonFile.files[0]);
+        formData.append("json", jsonFile.files[0]); //endregion
+
         axios.post('api/upload_file', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         }).then(function (response) {
-          console.log(response, 'response');
           window.map.replaceMarkers(response.data);
-          jQuery("#uploadModal").modal('toggle');
+          jQuery("#uploadModal").modal('toggle'); // When the user uploads a file they can then pick the rectangle and change the colour
+
           window.vue.showButtons = true;
         })["catch"](function (error) {
-          var data = error.response.data;
+          var data = error.response.data; //region Build a string of validation errors
+
           var errorResponse = "<p><strong>" + data.message + "</strong></p><ul>";
-          console.log(data.errors);
 
           for (var _key in data.errors) {
             var errors = data.errors[_key];
-            console.log(errors, 'errors');
 
             for (var _error in errors) {
               errorResponse += "<li>" + errors[_error] + "</li>";
             }
           }
 
-          errorResponse += "<ul>";
+          errorResponse += "<ul>"; //endregion
+
           window.vue.hasUploadValidationErrors = true;
           window.vue.uploadValidationErrors = errorResponse;
-          console.log(errorResponse); //jQuery("#uploadModal").modal('toggle');
         });
       });
+    }
+  }, {
+    key: "hookModalToBootstrapEvents",
+    value: function hookModalToBootstrapEvents() {
+      this.container = jQuery("#uploadModal");
+      var ctx = this;
+      this.container.on('hidden.bs.modal', function () {
+        ctx.resetForm();
+      });
+    }
+  }, {
+    key: "resetForm",
+    value: function resetForm() {
+      jQuery("#upload-geojson-form").trigger("reset");
+      window.vue.hasUploadValidationErrors = false;
+      window.vue.uploadValidationErrors = "";
+      jQuery("#file_source").html("");
     }
   }]);
 

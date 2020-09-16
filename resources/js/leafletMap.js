@@ -2,6 +2,7 @@ require('leaflet');
 require('leaflet-draw');
 
 export default class LeafletMap {
+    //region Setup
     constructor(startingLat, startingLng, startingZoom) {
         this.activeMarker = null; // Pointer to currently active marker so it can be disable later
         this.markerLayer = null; // Layer for drawing markers on
@@ -19,14 +20,9 @@ export default class LeafletMap {
         // In a live environment there are copyright rules around using OSM tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(this.map);
     }
+    //endregion
 
-    addEditableLayer() {
-        this.editableLayers = new L.FeatureGroup(); // Layer for drawing rectangles on
-        this.map.addLayer(this.editableLayers );
-        let ctx = this; // Pointer to this so it can be accessed inside closure scopes
-        let tableData = "";
-    }
-
+    //region Markers
     replaceMarkers(markers) {
         const ctx = this;
         /**
@@ -66,8 +62,17 @@ export default class LeafletMap {
 
                 let popupText = '<pre>' + html + '</pre>';
 
-                layer.bindPopup(popupText, {
+                // Binds a popup to each marker
+                // Need to listen to popupclose in order to reset the active
+                // marker
+                const popup = layer.bindPopup(popupText, {
                     maxWidth:640
+                });
+
+                popup.on("popupclose", function(e) {
+                    if (ctx.clickedMarker != null) {
+                        ctx.setMarkerInactive(ctx.clickedMarker.target);
+                    }
                 });
             }
         }
@@ -78,6 +83,7 @@ export default class LeafletMap {
         this.markerLayer = new L.GeoJSON(markers, layer_settings);
         this.markerLayer.addTo(this.map);
     }
+
 
     setMarkerActive(marker) {
         if (marker === null) {
@@ -99,6 +105,16 @@ export default class LeafletMap {
         })
     }
 
+    updateMarkerColour(colour) {
+        const ctx = this;
+        window.markerColours.setDefault(colour);
+        this.markerLayer.eachLayer(function(layer){
+            ctx.setMarkerInactive(layer);
+        });
+    }
+    //endregion
+
+    //region User Interaction
     enableUserInteraction() {
         this.map.dragging.enable();
         this.map.doubleClickZoom.enable();
@@ -110,20 +126,14 @@ export default class LeafletMap {
         this.map.doubleClickZoom.disable();
         this.map.scrollWheelZoom.disable();
     }
+    //endregion
 
-    updateMarkerColour(colour) {
-        const ctx = this;
-        window.markerColours.setDefault(colour);
-        this.markerLayer.eachLayer(function(layer){
-            ctx.setMarkerInactive(layer);
-        });
-    }
-
-    deleteOldShapes() {
-        const ctx = this;
-        this.editableLayers.eachLayer(function(layer){
-            ctx.map.removeLayer(layer);
-        });
+    //region Drawing
+    addEditableLayer() {
+        this.editableLayers = new L.FeatureGroup(); // Layer for drawing rectangles on
+        this.map.addLayer(this.editableLayers );
+        let ctx = this; // Pointer to this so it can be accessed inside closure scopes
+        let tableData = "";
     }
 
     drawNewRectangle() {
@@ -131,4 +141,13 @@ export default class LeafletMap {
         const rectangleDrawer = new L.Draw.Rectangle(this.map);
         rectangleDrawer.enable();
     }
+
+    // Stop a messy sea of rectangles appearing
+    deleteOldShapes() {
+        const ctx = this;
+        this.editableLayers.eachLayer(function(layer){
+            ctx.map.removeLayer(layer);
+        });
+    }
+    //endregion
 }

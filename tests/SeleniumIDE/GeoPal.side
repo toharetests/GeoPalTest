@@ -1,0 +1,219 @@
+{
+  "id": "a341272b-074a-4402-b935-47ba5722d6c0",
+  "version": "2.0",
+  "name": "GeoPal",
+  "url": "http://geopal.test",
+  "tests": [{
+    "id": "6b6aefaf-bd0f-4d63-8609-b343d41a9130",
+    "name": "Run through",
+    "commands": [{
+      "id": "ef9c0ef0-05d3-46ef-9cc8-04e2a6998815",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "de48ca2d-7dfc-4582-8618-5ba7b145c4d8",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1645x1027",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3577e532-82c4-4c17-8aa8-c08ea5fb8286",
+      "comment": "",
+      "command": "click",
+      "target": "id=upload",
+      "targets": [
+        ["id=upload", "id"],
+        ["css=#upload", "css:finder"],
+        ["xpath=//input[@id='upload']", "xpath:attributes"],
+        ["xpath=//div[@id='leaflet-map']/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "32580402-1fe6-4b7e-a072-fb64d43926b8",
+      "comment": "",
+      "command": "click",
+      "target": "id=new_geojson",
+      "targets": [
+        ["id=new_geojson", "id"],
+        ["name=new_geojson", "name"],
+        ["css=#new_geojson", "css:finder"],
+        ["xpath=//input[@id='new_geojson']", "xpath:attributes"],
+        ["xpath=//form[@id='upload-geojson-form']/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8b1cc562-e834-4d09-bad6-17e6641e9dfb",
+      "comment": "",
+      "command": "type",
+      "target": "id=new_geojson",
+      "targets": [
+        ["id=new_geojson", "id"],
+        ["name=new_geojson", "name"],
+        ["css=#new_geojson", "css:finder"],
+        ["xpath=//input[@id='new_geojson']", "xpath:attributes"],
+        ["xpath=//form[@id='upload-geojson-form']/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "C:\\fakepath\\stations.geojson"
+    }, {
+      "id": "06740a7f-9190-4abb-a3f5-838b070c75d7",
+      "comment": "",
+      "command": "click",
+      "target": "id=geojson-modal-submit",
+      "targets": [
+        ["id=geojson-modal-submit", "id"],
+        ["css=#geojson-modal-submit", "css:finder"],
+        ["xpath=//button[@id='geojson-modal-submit']", "xpath:attributes"],
+        ["xpath=//form[@id='upload-geojson-form']/div[3]/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "58b8a599-87f9-442d-8f17-84dc7ae4023d",
+      "comment": "",
+      "command": "click",
+      "target": "id=lasso",
+      "targets": [
+        ["id=lasso", "id"],
+        ["css=#lasso", "css:finder"],
+        ["xpath=//input[@id='lasso']", "xpath:attributes"],
+        ["xpath=//div[@id='leaflet-map']/div/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5860a04a-2dfd-4e5a-8b11-143fd0b5f9a9",
+      "comment": "",
+      "command": "click",
+      "target": "id=leaflet-map",
+      "targets": [
+        ["id=leaflet-map", "id"],
+        ["css=#leaflet-map", "css:finder"],
+        ["xpath=//div[@id='leaflet-map']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div", "xpath:idRelative"],
+        ["xpath=//div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "355aaa02-6b6e-4bf5-a84d-703156ca4796",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=2",
+      "targets": [
+        ["linkText=2", "linkText"],
+        ["css=.paginate_button:nth-child(3) > .page-link", "css:finder"],
+        ["xpath=//a[contains(text(),'2')]", "xpath:link"],
+        ["xpath=//div[@id='locationsingrid_paginate']/ul/li[3]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[5]", "xpath:href"],
+        ["xpath=//li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'2')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "34ca17d2-cb28-43c0-acd7-eba99bd5387e",
+      "comment": "",
+      "command": "click",
+      "target": "css=#locationsModal .btn",
+      "targets": [
+        ["css=#locationsModal .btn", "css:finder"],
+        ["xpath=(//button[@type='button'])[7]", "xpath:attributes"],
+        ["xpath=(//form[@id='upload-geojson-form']/div[3]/button)[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div/form/div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Close')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "79393fbf-e9da-41a1-8a0b-573f9a72e8cb",
+      "comment": "",
+      "command": "click",
+      "target": "id=colourpick",
+      "targets": [
+        ["id=colourpick", "id"],
+        ["css=#colourpick", "css:finder"],
+        ["xpath=//input[@id='colourpick']", "xpath:attributes"],
+        ["xpath=//div[@id='leaflet-map']/div/input[3]", "xpath:idRelative"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "cc7e48d2-0467-49f5-917e-6366a46cbd4b",
+      "comment": "",
+      "command": "mouseDown",
+      "target": "css=.IroWheelLightness",
+      "targets": [
+        ["css=.IroWheelLightness", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "89514d67-743c-4c37-970c-c002447032d9",
+      "comment": "",
+      "command": "mouseUp",
+      "target": "css=.IroHandle:nth-child(6) > circle:nth-child(2)",
+      "targets": [
+        ["css=.IroHandle:nth-child(6) > circle:nth-child(2)", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "3ab7d322-7609-4008-ad83-47c22378364c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.IroWheel",
+      "targets": [
+        ["css=.IroWheel", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "6b01d94c-4557-481d-bec0-d0f9965bbcd9",
+      "comment": "",
+      "command": "click",
+      "target": "id=updateIconColours",
+      "targets": [
+        ["id=updateIconColours", "id"],
+        ["css=#updateIconColours", "css:finder"],
+        ["xpath=//button[@id='updateIconColours']", "xpath:attributes"],
+        ["xpath=//form[@id='colour-picker-form']/div[3]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/form/div[3]/button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fd1d3fd6-70a8-4503-b2aa-a7656bf18671",
+      "comment": "",
+      "command": "click",
+      "target": "css=.leaflet-interactive:nth-child(4)",
+      "targets": [
+        ["css=.leaflet-interactive:nth-child(4)", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "6d0bb641-bacf-4010-a76a-482a06c6c74b",
+      "comment": "",
+      "command": "click",
+      "target": "id=leaflet-map",
+      "targets": [
+        ["id=leaflet-map", "id"],
+        ["css=#leaflet-map", "css:finder"],
+        ["xpath=//div[@id='leaflet-map']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div", "xpath:idRelative"],
+        ["xpath=//div/div", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "922e4e96-f5e2-456e-b3d0-ee44b73b668a",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["6b6aefaf-bd0f-4d63-8609-b343d41a9130"]
+  }],
+  "urls": ["http://geopal.test/"],
+  "plugins": []
+}

@@ -48,10 +48,12 @@ function bootMarkerColours() {
     return new MarkerColours();
 }
 
+//https://iro.js.org/
 function bootColourPicker() {
     return new ColourPicker();
 }
 
+//https://leafletjs.com/
 function bootMap() {
     return new LeafletMap(39, -77, 12);
 }
