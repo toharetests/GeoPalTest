@@ -1,14 +1,14 @@
 require('./bootstrap');
 
 import Vue from 'vue';
-import HelloWorld from './components/HelloWorld';
+import ColourPicker from "./ColourPicker";
 
-
+//Setup Colour Picker
+window.colourPicker = new ColourPicker();
 
 const app = new Vue({
     el: '#app',
     components: {
-        HelloWorld
     }
 });
 
