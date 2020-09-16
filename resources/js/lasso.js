@@ -1,6 +1,7 @@
 export default class Lasso {
     constructor() {
         this.hookLassoToDataTable();
+        this.hookCloseModalToRemoveRectangle()
     }
 
     hookLassoToDataTable() {
@@ -10,7 +11,7 @@ export default class Lasso {
 
             window.map.editableLayers.addLayer(layer);
 
-            ctx.markersInRectangle = "<table data-toggle=\"table\" id='locationsingrid' class='table'><thead><tr><td>Latitude</td><td>Longitude</td><td>Address</td></tr></thead><tbody>";
+            ctx.markersInRectangle = "<table data-toggle=\"table\" id='locationsingrid' class='table'><thead><tr><td>Address</td><td>Latitude</td><td>Longitude</td></tr></thead><tbody>";
 
             if (window.map.markerLayer === null) {
                 return;
@@ -20,8 +21,8 @@ export default class Lasso {
                     let latLng = marker.getLatLng();
                     let address = marker.feature.properties['address'] ?? "Unknown";
 
-                    ctx.markersInRectangle += "<tr><td>" + latLng.lat + "</td>" +
-                        "<td>" + latLng.lng + "</td>" + "<td>" + address + "</td></tr>";
+                    ctx.markersInRectangle += "<tr><td>" + address + "</td><td>" + latLng.lat + "</td>" +
+                        "<td>" + latLng.lng + "</td></tr>";
 
                 }
             });
@@ -39,4 +40,11 @@ export default class Lasso {
 
     }
 
+    hookCloseModalToRemoveRectangle() {
+        this.container = jQuery("#locationsModal");
+
+        this.container.on('hidden.bs.modal', function(){
+            window.map.deleteOldShapes();
+        })
+    }
 }

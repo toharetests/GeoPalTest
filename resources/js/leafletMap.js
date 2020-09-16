@@ -25,26 +25,6 @@ export default class LeafletMap {
         this.map.addLayer(this.editableLayers );
         let ctx = this; // Pointer to this so it can be accessed inside closure scopes
         let tableData = "";
-
-        // this.map.on(L.Draw.Event.CREATED, function (e) {
-        //     var layer = e.layer;
-        //
-        //     ctx.editableLayers.addLayer(layer);
-        //
-        //     ctx.markersInRectangle = "<table data-toggle=\"table\" id='locationsingrid' class='table'><thead><tr><td>Latitude</td><td>Longitude</td><td>Address</td></tr></thead><tbody>";
-        //     ctx.markerLayer.eachLayer(function (marker) {
-        //         if (layer.getBounds().contains(marker.getLatLng())) {
-        //             let latLng = marker.getLatLng();
-        //             let address = marker.feature.properties['address'] ?? "Unknown";
-        //
-        //             ctx.markersInRectangle += "<tr><td>" + latLng.lat + "</td>" +
-        //                 "<td>" + latLng.lng + "</td>" + "<td>" + address + "</td></tr>";
-        //
-        //         }
-        //     });
-        //     ctx.markersInRectangle += "</tbody></table>"
-        //     alert("DBG: Need Data table");
-        // });
     }
 
     replaceMarkers(markers) {

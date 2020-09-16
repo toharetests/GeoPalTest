@@ -147,5 +147,6 @@ return [
     */
 
     'attributes' => [],
+    'geojson' => 'Please upload a GeoJSON file only.'
 
 ];

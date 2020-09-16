@@ -3,7 +3,7 @@
         <div class="modal-content">
             <form id="colour-picker-form">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="uploadGeoJsonModel">Choose Marker Colour</h5>
+                    <h5 class="modal-title" id="uploadGeoJsonModel">Pick New Colour for Map Icons</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

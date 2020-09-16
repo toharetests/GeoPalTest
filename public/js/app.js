@@ -65507,6 +65507,7 @@ var Lasso = /*#__PURE__*/function () {
     _classCallCheck(this, Lasso);
 
     this.hookLassoToDataTable();
+    this.hookCloseModalToRemoveRectangle();
   }
 
   _createClass(Lasso, [{
@@ -65516,7 +65517,7 @@ var Lasso = /*#__PURE__*/function () {
       window.map.map.on(L.Draw.Event.CREATED, function (e) {
         var layer = e.layer;
         window.map.editableLayers.addLayer(layer);
-        ctx.markersInRectangle = "<table data-toggle=\"table\" id='locationsingrid' class='table'><thead><tr><td>Latitude</td><td>Longitude</td><td>Address</td></tr></thead><tbody>";
+        ctx.markersInRectangle = "<table data-toggle=\"table\" id='locationsingrid' class='table'><thead><tr><td>Address</td><td>Latitude</td><td>Longitude</td></tr></thead><tbody>";
 
         if (window.map.markerLayer === null) {
           return;
@@ -65528,7 +65529,7 @@ var Lasso = /*#__PURE__*/function () {
 
             var latLng = marker.getLatLng();
             var address = (_marker$feature$prope = marker.feature.properties['address']) !== null && _marker$feature$prope !== void 0 ? _marker$feature$prope : "Unknown";
-            ctx.markersInRectangle += "<tr><td>" + latLng.lat + "</td>" + "<td>" + latLng.lng + "</td>" + "<td>" + address + "</td></tr>";
+            ctx.markersInRectangle += "<tr><td>" + address + "</td><td>" + latLng.lat + "</td>" + "<td>" + latLng.lng + "</td></tr>";
           }
         });
         ctx.markersInRectangle += "</tbody></table>";
@@ -65542,6 +65543,14 @@ var Lasso = /*#__PURE__*/function () {
       jQuery("#locationsingrid").DataTable({//scrollY:400,
       });
       jQuery("#locationsModal").modal('toggle');
+    }
+  }, {
+    key: "hookCloseModalToRemoveRectangle",
+    value: function hookCloseModalToRemoveRectangle() {
+      this.container = jQuery("#locationsModal");
+      this.container.on('hidden.bs.modal', function () {
+        window.map.deleteOldShapes();
+      });
     }
   }]);
 
@@ -65603,25 +65612,7 @@ var LeafletMap = /*#__PURE__*/function () {
       this.map.addLayer(this.editableLayers);
       var ctx = this; // Pointer to this so it can be accessed inside closure scopes
 
-      var tableData = ""; // this.map.on(L.Draw.Event.CREATED, function (e) {
-      //     var layer = e.layer;
-      //
-      //     ctx.editableLayers.addLayer(layer);
-      //
-      //     ctx.markersInRectangle = "<table data-toggle=\"table\" id='locationsingrid' class='table'><thead><tr><td>Latitude</td><td>Longitude</td><td>Address</td></tr></thead><tbody>";
-      //     ctx.markerLayer.eachLayer(function (marker) {
-      //         if (layer.getBounds().contains(marker.getLatLng())) {
-      //             let latLng = marker.getLatLng();
-      //             let address = marker.feature.properties['address'] ?? "Unknown";
-      //
-      //             ctx.markersInRectangle += "<tr><td>" + latLng.lat + "</td>" +
-      //                 "<td>" + latLng.lng + "</td>" + "<td>" + address + "</td></tr>";
-      //
-      //         }
-      //     });
-      //     ctx.markersInRectangle += "</tbody></table>"
-      //     alert("DBG: Need Data table");
-      // });
+      var tableData = "";
     }
   }, {
     key: "replaceMarkers",
