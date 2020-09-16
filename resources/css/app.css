@@ -16,3 +16,8 @@ html, body {
 .leaflet-top {
     padding: 20px;
 }
+
+.upload-prompt {
+    padding: 0 5px;
+}
+

@@ -1,4 +1,5 @@
 require('./bootstrap');
+require('./uploadGeoJson');
 
 // import Vue from 'vue';
 import ColourPicker from "./colourPicker";
@@ -30,4 +31,5 @@ function bootColourPicker() {
 function bootMap() {
     return new LeafletMap(39, -77, 12);
 }
+
 

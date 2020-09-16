@@ -53058,7 +53058,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _colourPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./colourPicker */ "./resources/js/colourPicker.js");
 /* harmony import */ var _leafletMap__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./leafletMap */ "./resources/js/leafletMap.js");
 /* harmony import */ var _markerColours__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./markerColours */ "./resources/js/markerColours.js");
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // import Vue from 'vue';
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+
+__webpack_require__(/*! ./uploadGeoJson */ "./resources/js/uploadGeoJson.js"); // import Vue from 'vue';
 
 
 
@@ -53190,7 +53192,7 @@ var LeafletMap = /*#__PURE__*/function () {
 
     this.activeMarker = null; // Pointer to currently active marker so it can be disable later
 
-    this.geoJsonLayer = null; // Layer for drawing markers on
+    this.markerLayer = null; // Layer for drawing markers on
 
     var mapOptions = {
       drawControl: false
@@ -53220,7 +53222,7 @@ var LeafletMap = /*#__PURE__*/function () {
         var layer = e.layer;
         ctx.editableLayers.addLayer(layer);
         ctx.markersInRectangle = "<table data-toggle=\"table\" id='locationsingrid' class='table'><thead><tr><td>Latitude</td><td>Longitude</td><td>Address</td></tr></thead><tbody>";
-        ctx.geoJsonLayer.eachLayer(function (marker) {
+        ctx.markerLayer.eachLayer(function (marker) {
           if (layer.getBounds().contains(marker.getLatLng())) {
             var _marker$feature$prope;
 
@@ -53231,6 +53233,87 @@ var LeafletMap = /*#__PURE__*/function () {
         });
         ctx.markersInRectangle += "</tbody></table>";
         alert("DBG: Need Data table");
+      });
+    }
+  }, {
+    key: "replaceMarkers",
+    value: function replaceMarkers(markers) {
+      var ctx = this;
+      /**
+       * Requirements:
+       * 1) On click/tap show that items properties
+       * 2) On click/tap change that items colour
+       */
+
+      var layer_settings = {
+        name: 'geoJSON',
+        style: function style() {
+          return {
+            color: window.markerColours["default"]
+          };
+        },
+        pointToLayer: function pointToLayer(feature, latlng) {
+          return new L.CircleMarker(latlng, {
+            radius: 10,
+            fillOpacity: 0.85
+          });
+        },
+        onEachFeature: function onEachFeature(feature, layer) {
+          layer.on({
+            click: function click(marker) {
+              if (ctx.clickedMarker != null) {
+                ctx.setMarkerInactive(ctx.clickedMarker.target);
+              }
+
+              ctx.clickedMarker = marker;
+              ctx.setMarkerActive(marker.target);
+            }
+          }); // We can't guarantee what fields will be in the the GeoJSON file a user could upload
+          // So I'm reformatting the JSON string and showing them.
+
+          var html = "<strong>Location Data</strong><table>";
+
+          for (var key in feature.properties) {
+            var value = feature.properties[key];
+            var uppercaseFirstLetterKey = key.charAt(0).toUpperCase() + key.slice(1);
+            html += "<tr><td>" + uppercaseFirstLetterKey + "</td><td>" + value + "</td></tr>";
+          }
+
+          html += "</table>";
+          var popupText = '<pre>' + html + '</pre>';
+          layer.bindPopup(popupText, {
+            maxWidth: 640
+          });
+        }
+      };
+
+      if (this.markerLayer != null) {
+        this.map.removeLayer(this.markerLayer);
+      }
+
+      this.markerLayer = new L.GeoJSON(markers, layer_settings);
+      this.markerLayer.addTo(this.map);
+    }
+  }, {
+    key: "setMarkerActive",
+    value: function setMarkerActive(marker) {
+      if (marker === null) {
+        return;
+      }
+
+      marker.setStyle({
+        color: window.markerColours.active
+      });
+    }
+  }, {
+    key: "setMarkerInactive",
+    value: function setMarkerInactive(marker) {
+      if (marker === null) {
+        return;
+      }
+
+      marker.setStyle({
+        color: window.markerColours["default"]
       });
     }
   }]);
@@ -53262,6 +53345,43 @@ var MarkerColours = function MarkerColours() {
 };
 
 
+
+/***/ }),
+
+/***/ "./resources/js/uploadGeoJson.js":
+/*!***************************************!*\
+  !*** ./resources/js/uploadGeoJson.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+jQuery("#new_geojson").on('change', function (e) {
+  var _e$target$files$0$nam;
+
+  var filename = (_e$target$files$0$nam = e.target.files[0].name) !== null && _e$target$files$0$nam !== void 0 ? _e$target$files$0$nam : "";
+  jQuery("#file_source").html(filename);
+});
+jQuery("#upload-geojson-form").on('submit', function (e) {
+  e.preventDefault();
+  var formData = new FormData(),
+      fields = jQuery("#upload-geojson-form").serializeArray(),
+      jsonFile = document.querySelector('#new_geojson');
+  $.each(fields, function (i, field) {
+    formData.append(field.name, field.value);
+  });
+  formData.append("json", jsonFile.files[0]);
+  axios.post('api/upload_file', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }).then(function (response) {
+    window.map.replaceMarkers(response.data);
+    jQuery("#uploadModal").modal('toggle');
+  })["catch"](function (error) {
+    console.log(error, 'error');
+    jQuery("#uploadModal").modal('toggle');
+  });
+});
 
 /***/ }),
 
